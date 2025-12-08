@@ -1,0 +1,9 @@
+# Dependency directories
+node_modules
+
+# PNPM
+.pnpm-store
+
+# App directories
+**/dist
+**/test-run
