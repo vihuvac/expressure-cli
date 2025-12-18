@@ -1,7 +1,12 @@
 import { updateProjectConfig } from '../utils/config';
 import { installDependencies, startDocker } from '../utils/dependencies';
 import { configureEnvironment } from '../utils/filesystem';
-import { cloneBoilerplate } from '../utils/git';
+import {
+  cloneBoilerplate,
+  createInitialCommit,
+  initializeGitProject,
+  prepareHusky,
+} from '../utils/git';
 import { checkOverwrite, getProjectName, getProjectPath } from '../utils/prompts';
 
 /**
@@ -33,7 +38,12 @@ export const createProject = async (projectName?: string, projectPath?: string) 
   // 6. Install dependencies
   await installDependencies(path);
 
-  // 7. Start Docker
+  // 7. Initialize git project
+  await initializeGitProject(path);
+  await createInitialCommit(path, 'Initialize project');
+  await prepareHusky(path);
+
+  // 8. Start Docker
   await startDocker(path);
 
   return Object.freeze({

@@ -90,4 +90,21 @@ export const updateProjectConfig = async (
   } catch (_error) {
     note('Failed to update .jsdoc.json. Please check it manually.');
   }
+
+  // Update .husky/pre-commit
+  try {
+    const preCommitPath = path.join(projectPath, '.husky', 'pre-commit');
+    if (await fs.pathExists(preCommitPath)) {
+      let preCommitContent = await fs.readFile(preCommitPath, 'utf-8');
+
+      preCommitContent = preCommitContent.replace(
+        /npx lint-staged && docker exec -it expressure pnpm test/g,
+        `pnpx lint-staged && docker exec -it ${projectName} pnpm test`,
+      );
+
+      await fs.writeFile(preCommitPath, preCommitContent);
+    }
+  } catch (_error) {
+    note('Failed to update .husky/pre-commit. Please check it manually.');
+  }
 };
